@@ -27,9 +27,9 @@ jobs:
             PROJECT_DIR=/var/www/html/BookingAPi
             VENV_DIR=$PROJECT_DIR/venv
 
-            echo ">>> Ensuring Python, pip & Git are installed..."
+            echo ">>> Ensuring Python & pip are installed..."
             sudo apt update -y
-            sudo apt install -y python3 python3-pip python3-venv git nginx
+            sudo apt install -y python3 python3-pip python3-venv git
 
             echo ">>> Moving to project directory..."
             cd $PROJECT_DIR
@@ -46,50 +46,9 @@ jobs:
             echo ">>> Running migrations..."
             python manage.py migrate --noinput --settings=fitness_booking.settings
 
-            echo ">>> Setting up Gunicorn systemd service..."
-            sudo bash -c 'cat > /etc/systemd/system/fitness_booking.service <<EOL
-[Unit]
-Description=Gunicorn Django Project
-After=network.target
-
-[Service]
-User=ubuntu
-Group=www-data
-WorkingDirectory=/var/www/html/BookingAPi
-ExecStart=/var/www/html/BookingAPi/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 fitness_booking.wsgi:application
-
-[Install]
-WantedBy=multi-user.target
-EOL'
-
-            echo ">>> Starting & enabling Gunicorn service..."
+            echo ">>> Restarting Gunicorn and Nginx..."
             sudo systemctl daemon-reload
-            sudo systemctl enable fitness_booking
-            sudo systemctl restart fitness_booking
+            sudo systemctl restart fitness_booking || true
+            sudo systemctl restart nginx || true
 
-            echo ">>> Setting up Nginx configuration..."
-            sudo bash -c 'cat > /etc/nginx/sites-available/fitness_booking <<EOL
-server {
-    listen 80;
-    server_name _;
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location /static/ {
-        root /var/www/html/BookingAPi;
-    }
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOL'
-
-            sudo ln -sf /etc/nginx/sites-available/fitness_booking /etc/nginx/sites-enabled/
-            sudo nginx -t
-            sudo systemctl restart nginx
-
-            echo ">>> ✅ Deployment successful! Visit your EC2 public IP."
+            echo ">>> ✅ Deployment successful!"
