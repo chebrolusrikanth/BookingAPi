@@ -18,24 +18,27 @@ jobs:
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}   # usually "ubuntu"
+          username: ${{ secrets.EC2_USERNAME }} 
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script_stop: true
           debug: true
           script: |
+            PROJECT_DIR=/var/www/html/BookingAPi
+            VENV_DIR=$PROJECT_DIR/venv
+
             echo ">>> Ensuring Python & pip are installed..."
             sudo apt update -y
             sudo apt install -y python3 python3-pip python3-venv git
 
             echo ">>> Moving to project directory..."
-            cd /var/www/html/BookingAPi
+            cd $PROJECT_DIR
 
             echo ">>> Creating/activating virtual environment..."
-            if [ ! -d "venv" ]; then
-              python3 -m venv venv
+            if [ ! -d "$VENV_DIR" ]; then
+              python3 -m venv $VENV_DIR
             fi
-            source venv/bin/activate
+            source $VENV_DIR/bin/activate
 
             echo ">>> Installing dependencies..."
             pip install --upgrade pip
