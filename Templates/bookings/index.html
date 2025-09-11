@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><title>Classes</title></head>
+<body>
+  <h1>Available Classes</h1>
+  {% for cls in classes %}
+    <div>
+      <strong>{{ cls.name }}</strong> with {{ cls.instructor }} <br>
+      Date: {{ cls.datetime }} <br>
+      Slots: {{ cls.available_slots }} <br><br>
+    </div>
+  {% endfor %}
+  <a href="{% url 'book' %}">Book a Class</a> |
+  <a href="{% url 'view_bookings' %}">View My Bookings</a>
+</body>
+</html>
