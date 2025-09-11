@@ -48,10 +48,7 @@ jobs:
 
             echo ">>> Restarting Gunicorn and Nginx..."
             sudo systemctl daemon-reload
-            sudo systemctl restart fitness_booking || true
-            sudo systemctl restart nginx || true
+            sudo systemctl restart fitness_booking
+            sudo systemctl restart nginx
 
-            echo ">>> Starting Django development server in background..."
-            nohup python manage.py runserver 0.0.0.0:8000 --settings=fitness_booking.settings &
-            
             echo ">>> ✅ Deployment successful!"
