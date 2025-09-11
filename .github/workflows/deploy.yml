@@ -18,7 +18,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }} 
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script_stop: true
@@ -43,9 +43,8 @@ jobs:
             pip install --upgrade pip
             pip install -r requirements.txt
 
-            echo ">>> Running migrations & collectstatic..."
+            echo ">>> Running migrations..."
             python manage.py migrate --noinput --settings=fitness_booking.settings
-            python manage.py collectstatic --noinput --clear --settings=fitness_booking.settings
 
             echo ">>> Restarting Gunicorn and Nginx..."
             sudo systemctl daemon-reload
