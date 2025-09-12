@@ -26,29 +26,22 @@ jobs:
           script: |
             PROJECT_DIR=/var/www/html/BookingAPi
             VENV_DIR=$PROJECT_DIR/venv
-
             echo ">>> Ensuring Python & pip are installed..."
             sudo apt update -y
             sudo apt install -y python3 python3-pip python3-venv git
-
             echo ">>> Moving to project directory..."
             cd $PROJECT_DIR
-
             echo ">>> Rebuilding virtual environment..."
             rm -rf $VENV_DIR
             python3 -m venv $VENV_DIR
             source $VENV_DIR/bin/activate
-
             echo ">>> Installing dependencies..."
             pip install --upgrade pip
             pip install -r requirements.txt
-
             echo ">>> Running migrations..."
             python manage.py migrate --noinput --settings=fitness_booking.settings
-
             echo ">>> Restarting Gunicorn and Nginx..."
             sudo systemctl daemon-reload
             sudo systemctl restart fitness_booking || true
             sudo systemctl restart nginx || true
-
             echo ">>> ✅ Deployment successful!"
