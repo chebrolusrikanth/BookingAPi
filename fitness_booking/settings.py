@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-n4l1%s00&%c^@m(w3kd#$l(pfscq$b_01luk368tv0agon6!8t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["3.16.148.94", "localhost", "127.0.0.1", "myapp.com"]
+ALLOWED_HOSTS = ["3.16.148.94", "localhost", "127.0.0.1", "myapp.com", "bookingapi-q9h6.onrender.com"]
 
 
 # Application definition
